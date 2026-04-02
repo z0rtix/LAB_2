@@ -7,7 +7,7 @@ int main() {
     tests_of_MutableArraySequence();
     tests_of_ImmutableArraySequence();
     tests_of_MutableListSequence();
-    // tests_of_ImmutableListSequence();
+    tests_of_ImmutableListSequence();
 
     return 0;
 }

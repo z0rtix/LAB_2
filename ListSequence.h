@@ -11,12 +11,12 @@ template <class T>
 class ListSequence: public Sequence<T> {
     private:
         LinkedList<T> *list;
-        virtual ListSequence<T>* instance() = 0;
+        virtual ListSequence<T> *instance() = 0;
 
     public:
         ListSequence();
         ListSequence(T *items, int count);
-        ListSequence(LinkedList<T>* linkedList);
+        ListSequence(LinkedList<T> *linkedList);
         ListSequence(const ListSequence <T> & list);
         ListSequence(const DynamicArray<T>& dynamicArray);
         
@@ -53,20 +53,20 @@ class ListSequence: public Sequence<T> {
         bool isEmpty() const override;
         void print() const override;
         
-        ListSequence<T>* append(T item) override;
-        ListSequence<T>* prepend(T item) override;
-        ListSequence<T>* insertAt(T item, int index) override;
-        ListSequence<T>* clear() override;
+        ListSequence<T> *append(T item) override;
+        ListSequence<T> *prepend(T item) override;
+        ListSequence<T> *insertAt(T item, int index) override;
+        ListSequence<T> *clear() override;
 
-        ListSequence<T>* concat(Sequence<T>* sequence) const override;
-        ListSequence<T>* getSubsequence(int startIndex, int endIndex) const override;
-        IEnumerator<T>* getEnumerator() const;
+        ListSequence<T> *concat(Sequence<T> *sequence) const override;
+        ListSequence<T> *getSubsequence(int startIndex, int endIndex) const override;
+        IEnumerator<T> *getEnumerator() const;
 
-        virtual ListSequence<T>* copy() const = 0;
+        virtual ListSequence<T> *copy() const = 0;
 
-        template <typename Func> ListSequence<T>* map(Func mapper);
+        template <typename Func> ListSequence<T> *map(Func mapper);
         template <typename Func, typename U> U reduce(Func reducer, U initial);
-        template <typename Func> ListSequence<T>* where(Func predicate);
+        template <typename Func> ListSequence<T> *where(Func predicate);
 };
 
 template <class T>
@@ -80,7 +80,7 @@ ListSequence<T>::ListSequence(T *items, int count) {
 }
 
 template <class T>
-ListSequence<T>::ListSequence(LinkedList<T>* linkedList) {
+ListSequence<T>::ListSequence(LinkedList<T> *linkedList) {
     list = new LinkedList<T>(*linkedList);
 }
 
@@ -133,36 +133,36 @@ void ListSequence<T>::print() const {
 }
 
 template <class T>
-ListSequence<T>* ListSequence<T>::append(T item) {
-    ListSequence<T>* obj = instance();
+ListSequence<T> *ListSequence<T>::append(T item) {
+    ListSequence<T> *obj = instance();
     obj->list->append(item);
     return obj;
 }
 
 template <class T>
-ListSequence<T>* ListSequence<T>::prepend(T item) {
-    ListSequence<T>* obj = instance();
+ListSequence<T> *ListSequence<T>::prepend(T item) {
+    ListSequence<T> *obj = instance();
     obj->list->prepend(item);
     return obj;
 }
 
 template <class T>
-ListSequence<T>* ListSequence<T>::insertAt(T item, int index) {
-    ListSequence<T>* obj = instance();
+ListSequence<T> *ListSequence<T>::insertAt(T item, int index) {
+    ListSequence<T> *obj = instance();
     obj->list->insertAt(item, index);
     return obj;
 }
 
 template <class T>
-ListSequence<T>* ListSequence<T>::clear() {
-    ListSequence<T>* obj = instance();
+ListSequence<T> *ListSequence<T>::clear() {
+    ListSequence<T> *obj = instance();
     obj->list->clear();
     return obj;
 }
 
 template <class T>
-ListSequence<T>* ListSequence<T>::concat(Sequence<T>* list) const {
-    ListSequence<T>* result = this->copy();
+ListSequence<T> *ListSequence<T>::concat(Sequence<T> *list) const {
+    ListSequence<T> *result = this->copy();
     result->list->clear();
     
     for (int i = 0; i < getLength(); i++) {
@@ -175,12 +175,12 @@ ListSequence<T>* ListSequence<T>::concat(Sequence<T>* list) const {
 }
 
 template <class T>
-ListSequence<T>* ListSequence<T>::getSubsequence(int startIndex, int endIndex) const {
+ListSequence<T> *ListSequence<T>::getSubsequence(int startIndex, int endIndex) const {
     if (startIndex < 0 || endIndex >= getLength() || startIndex > endIndex) {
         throw IndexOutOfRange();
     }
     
-    ListSequence<T>* result = this->copy(); 
+    ListSequence<T> *result = this->copy(); 
     result->list->clear();
     
     for (int i = startIndex; i <= endIndex; i++) {
@@ -191,14 +191,14 @@ ListSequence<T>* ListSequence<T>::getSubsequence(int startIndex, int endIndex) c
 }
 
 template <class T>
-IEnumerator<T>* ListSequence<T>::getEnumerator() const {
+IEnumerator<T> *ListSequence<T>::getEnumerator() const {
     return list->getEnumerator();
 }
 
 template <class T>
 template <typename Func>
-ListSequence<T>* ListSequence<T>::map(Func mapper) {
-    ListSequence<T>* obj = this->copy();
+ListSequence<T> *ListSequence<T>::map(Func mapper) {
+    ListSequence<T> *obj = this->copy();
     for (int i = 0; i < list->getLength(); i++) {
         obj->list->set(i, mapper(list->get(i)));
     }
@@ -217,8 +217,8 @@ U ListSequence<T>::reduce(Func reducer, U initial) {
 
 template <class T>
 template <typename Func>
-ListSequence<T>* ListSequence<T>::where(Func predicate) {
-    ListSequence<T>* result = this->copy();
+ListSequence<T> *ListSequence<T>::where(Func predicate) {
+    ListSequence<T> *result = this->copy();
     result->list->clear();
     for (int i = 0; i < getLength(); i++) {
         if (predicate(get(i))) {
@@ -232,16 +232,16 @@ ListSequence<T>* ListSequence<T>::where(Func predicate) {
 template <class T>
 class MutableListSequence : public ListSequence<T> {
     private:
-        ListSequence<T>* instance() override {
+        ListSequence<T> *instance() override {
             return this;
         }
 
     public:
         MutableListSequence() : ListSequence<T>() {}
-        MutableListSequence(T* items, int count) : ListSequence<T>(items, count) {}
+        MutableListSequence(T *items, int count) : ListSequence<T>(items, count) {}
         MutableListSequence(const ListSequence<T>& other) : ListSequence<T>(other) {}
 
-        ListSequence<T>* copy() const override {
+        ListSequence<T> *copy() const override {
             return new MutableListSequence<T>(*this);
         }
 };
@@ -249,16 +249,16 @@ class MutableListSequence : public ListSequence<T> {
 template <class T>
 class ImmutableListSequence : public ListSequence<T> {
     private:
-        ListSequence<T>* instance() override {
+        ListSequence<T> *instance() override {
             return new ImmutableListSequence<T>(*this);
         }
 
     public:
         ImmutableListSequence() : ListSequence<T>() {}
-        ImmutableListSequence(T* items, int count) : ListSequence<T>(items, count) {}
+        ImmutableListSequence(T *items, int count) : ListSequence<T>(items, count) {}
         ImmutableListSequence(const ListSequence<T>& other) : ListSequence<T>(other) {}
 
-        ListSequence<T>* copy() const override {
+        ListSequence<T> *copy() const override {
             return new ImmutableListSequence<T>(*this);
         }
 };

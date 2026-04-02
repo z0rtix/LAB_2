@@ -186,8 +186,8 @@ ArraySequence<T> *ArraySequence<T>::clear() {
 }
 
 template <class T>
-ArraySequence<T>* ArraySequence<T>::concat(Sequence<T>* list) const {
-    ArraySequence<T>* result = this->copy();
+ArraySequence<T> *ArraySequence<T>::concat(Sequence<T> *list) const {
+    ArraySequence<T> *result = this->copy();
     result->array->resize(0);
     
     for (int i = 0; i < getLength(); i++) {
@@ -248,8 +248,8 @@ U ArraySequence<T>::reduce(Func reducer, U initial) {
 
 template <class T>
 template <typename Func>
-ArraySequence<T>* ArraySequence<T>::where(Func predicate) {
-    ArraySequence<T>* result = this->copy();
+ArraySequence<T> *ArraySequence<T>::where(Func predicate) {
+    ArraySequence<T> *result = this->copy();
     result->array->resize(0);
     
     for (int i = 0; i < getLength(); i++) {

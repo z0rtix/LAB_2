@@ -64,7 +64,7 @@ class LinkedList {
             if (this != &other) {
                 clear();
                 
-                Node* current = other.first;
+                Node *current = other.first;
                 while (current != nullptr) {
                     append(current->data);
                     current = current->next;
