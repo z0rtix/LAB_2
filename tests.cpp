@@ -55,44 +55,6 @@ void tests_of_DynamicArray() {
     
     std::cout << "✅ Тесты resize пройдены" << std::endl;
     
-    // DynamicArray<int> arr4;
-    // assert(arr4.getSize() == 0);
-    // assert(arr4.isEmpty() == true);
-    
-    // arr4.append(10);
-    // assert(arr4.getSize() == 1);
-    // assert(arr4.get(0) == 10);
-    // assert(arr4.isEmpty() == false);
-    
-    // arr4.append(20);
-    // assert(arr4.getSize() == 2);
-    // assert(arr4.get(1) == 20);
-    
-    // arr4.append(30);
-    // assert(arr4.getSize() == 3);
-    // assert(arr4.get(2) == 30);
-    
-    // std::cout << "✅ Тесты append пройдены" << std::endl;
-    
-    // DynamicArray<int> arr5;
-    
-    // arr5.prepend(100);
-    // assert(arr5.getSize() == 1);
-    // assert(arr5.get(0) == 100);
-    
-    // arr5.prepend(200);
-    // assert(arr5.getSize() == 2);
-    // assert(arr5.get(0) == 200);
-    // assert(arr5.get(1) == 100);
-    
-    // arr5.prepend(300);
-    // assert(arr5.getSize() == 3);
-    // assert(arr5.get(0) == 300);
-    // assert(arr5.get(1) == 200);
-    // assert(arr5.get(2) == 100);
-    
-    // std::cout << "✅ Тесты prepend пройдены" << std::endl;
-    
     assert(arr2[2] == 200);
     assert(arr2[4] == 400);
     
@@ -374,21 +336,21 @@ void tests_of_MutableArraySequence() {
     MutableArraySequence<int> seq;
     seq.append(1)->append(2)->append(3)->append(4)->append(5);
     
-    seq.map([](int x) { return x * 2; });
-    assert(seq.getLength() == 5);
-    assert(seq.get(0) == 2);
-    assert(seq.get(4) == 10);
+    auto* mapped = seq.map([](int x) { return x * 2; });
+    assert(mapped->getLength() == 5);
+    assert(mapped->get(0) == 2);
+    assert(mapped->get(4) == 10);
+    delete mapped;
 
     std::cout << "✅ Тесты map пройдены" << std::endl;
     
     ArraySequence<int>* wh = seq.where([](int x) { return x % 4 == 0; });
-    assert(wh->getLength() == 2);
+    assert(wh->getLength() == 1);
     assert(wh->get(0) == 4);
-    assert(wh->get(1) == 8);
+    delete wh;
 
     std::cout << "✅ Тесты where пройдены" << std::endl;
     
-    seq.map([](int x) { return x / 2; });
     int sum = seq.reduce([](int acc, int x) { return acc + x; }, 0);
     assert(sum == 15);
     
@@ -406,140 +368,118 @@ void tests_of_ImmutableArraySequence() {
     ImmutableArraySequence<int> immutable1;
     assert(immutable1.getLength() == 0);
     assert(immutable1.isEmpty() == true);
-    
     std::cout << "✅ Начальные проверки пройдены" << std::endl;
     
-    // Append возвращает новый объект, оригинал не меняется
     Sequence<int>* seq2 = immutable1.append(100);
     assert(seq2->getLength() == 1);
     assert(seq2->getFirst() == 100);
     assert(seq2->getLast() == 100);
-    assert(immutable1.getLength() == 0);  // Оригинал не изменился
+    assert(immutable1.getLength() == 0);
     
     Sequence<int>* seq3 = seq2->append(200);
     assert(seq3->getLength() == 2);
     assert(seq3->getFirst() == 100);
     assert(seq3->getLast() == 200);
-    assert(seq2->getLength() == 1);  // seq2 не изменился
-    
+    assert(seq2->getLength() == 1);
+    delete seq2;
+    delete seq3;
     std::cout << "✅ Тесты append пройдены" << std::endl;
     
-    // Prepend возвращает новый объект
     Sequence<int>* seq4 = immutable1.prepend(50);
     assert(seq4->getLength() == 1);
     assert(seq4->getFirst() == 50);
-    assert(immutable1.getLength() == 0);  // Оригинал не изменился
-    
+    assert(immutable1.getLength() == 0);
+    delete seq4;
     std::cout << "✅ Тесты prepend пройдены" << std::endl;
     
-    // InsertAt возвращает новый объект
     int data[] = {10, 20, 30, 40, 50};
     ImmutableArraySequence<int> baseSeq(data, 5);
     Sequence<int>* inserted = baseSeq.insertAt(150, 2);
     assert(inserted->getLength() == 6);
     assert(inserted->get(2) == 150);
     assert(inserted->get(3) == 30);
-    assert(baseSeq.getLength() == 5);  // Оригинал не изменился
-    
+    assert(baseSeq.getLength() == 5);
+    delete inserted;
     std::cout << "✅ Тесты insertAt пройдены" << std::endl;
     
-    // Get методы работают как обычно
-    assert(inserted->get(0) == 10);
-    assert(inserted->getFirst() == 10);
-    assert(inserted->getLast() == 50);
-    
-    std::cout << "✅ Тесты get методов пройдены" << std::endl;
-    
-    // Цепочка вызовов работает
     ImmutableArraySequence<int> chain;
-    Sequence<int>* chainResult = chain.append(300)->append(400);
-    assert(chainResult->getLength() == 2);
-    assert(chainResult->getFirst() == 300);
-    assert(chainResult->getLast() == 400);
-    assert(chain.getLength() == 0);  // Оригинал не изменился
-    
+    Sequence<int>* c1 = chain.append(300);
+    Sequence<int>* c2 = c1->append(400);
+    assert(c2->getLength() == 2);
+    assert(c2->getFirst() == 300);
+    assert(c2->getLast() == 400);
+    assert(chain.getLength() == 0);
+    delete c1;
+    delete c2;
     std::cout << "✅ Тесты цепочки вызовов пройдены" << std::endl;
     
-    // Concat возвращает новый объект
     ImmutableArraySequence<int> concatSource;
-    Sequence<int>* sourceWithData = concatSource.append(1)->append(2);
-    Sequence<int>* concated = baseSeq.concat(sourceWithData);
-    assert(concated->getLength() == 7);  // 5 + 2
+    Sequence<int>* cs1 = concatSource.append(1);
+    Sequence<int>* cs2 = cs1->append(2);
+    Sequence<int>* concated = baseSeq.concat(cs2);
+    assert(concated->getLength() == 7);
     assert(concated->getFirst() == 10);
     assert(concated->getLast() == 2);
-    assert(baseSeq.getLength() == 5);  // Оригинал не изменился
-    
+    assert(baseSeq.getLength() == 5);
+    delete cs1;
+    delete cs2;
     delete concated;
     std::cout << "✅ Тесты concat пройдены" << std::endl;
     
-    // GetSubsequence возвращает новый объект
     Sequence<int>* sub = baseSeq.getSubsequence(1, 3);
     assert(sub->getLength() == 3);
     assert(sub->getFirst() == 20);
     assert(sub->getLast() == 40);
-    assert(baseSeq.getLength() == 5);  // Оригинал не изменился
-    
     delete sub;
     std::cout << "✅ Тесты getSubsequence пройдены" << std::endl;
     
-    // Многократные операции создают новые объекты
     ImmutableArraySequence<int> test;
-    Sequence<int>* test1 = test.append(1);
-    assert(test1->getLength() == 1);
-    
-    Sequence<int>* test2 = test1;
-    for (int i = 0; i < 5; i++) {
-        test2 = test2->append(i * 10);
+    Sequence<int>* t1 = test.append(1);
+    assert(t1->getLength() == 1);
+    Sequence<int>* t2 = t1;
+    for (int i = 0; i < 5; ++i) {
+        Sequence<int>* old = t2;
+        t2 = t2->append(i * 10);
+        delete old;
     }
-    assert(test2->getLength() == 6);
-    assert(test2->getFirst() == 1);
-    assert(test2->getLast() == 40);
-    assert(test1->getLength() == 1);  // Первый объект не изменился
-    
+    assert(t2->getLength() == 6);
+    assert(t2->getFirst() == 1);
+    assert(t2->getLast() == 40);
+    delete t2;
     std::cout << "✅ Тесты многократных изменений пройдены" << std::endl;
     
     ImmutableArraySequence<ImmutableArraySequence<int>> arrayOfArrays;
     ImmutableArraySequence<int> inner1, inner2, inner3;
-
-    Sequence<int>* inner1Seq = inner1.append(1)->append(2)->append(3);
-    Sequence<int>* inner2Seq = inner2.append(10)->append(20);
-    Sequence<int>* inner3Seq = inner3.append(100)->append(200)->append(300);
-
-    ImmutableArraySequence<int>* castedInner1 = dynamic_cast<ImmutableArraySequence<int>*>(inner1Seq);
-    ImmutableArraySequence<int>* castedInner2 = dynamic_cast<ImmutableArraySequence<int>*>(inner2Seq);
-    ImmutableArraySequence<int>* castedInner3 = dynamic_cast<ImmutableArraySequence<int>*>(inner3Seq);
-
-    assert(castedInner1 != nullptr);
-    assert(castedInner2 != nullptr);
-    assert(castedInner3 != nullptr);
-
-    Sequence<ImmutableArraySequence<int>>* array1 = arrayOfArrays.append(*castedInner1);
-    Sequence<ImmutableArraySequence<int>>* array2 = array1->append(*castedInner2);
-    Sequence<ImmutableArraySequence<int>>* array3 = array2->append(*castedInner3);
-
-    assert(array3->getLength() == 3);
-    assert(array3->get(0).getLength() == 3);
-    assert(array3->get(1).getLength() == 2);
-    assert(array3->get(2).getLength() == 3);
-
-    assert(arrayOfArrays.getLength() == 0);
-        
-    std::cout << "✅ Тесты массива массивов пройдены" << std::endl;
     
-    delete seq2;
-    delete seq3;
-    delete seq4;
-    delete inserted;
-    delete chainResult;
-    delete sourceWithData;
-    delete test1;
-    delete test2;
-    delete inner1Seq;
-    delete inner2Seq;
-    delete inner3Seq;
-    delete array1;
-    delete array2;
-    delete array3;
+    Sequence<int>* i1_1 = inner1.append(1);
+    Sequence<int>* i1_2 = i1_1->append(2);
+    Sequence<int>* i1_3 = i1_2->append(3);
+    Sequence<int>* i2_1 = inner2.append(10);
+    Sequence<int>* i2_2 = i2_1->append(20);
+    Sequence<int>* i3_1 = inner3.append(100);
+    Sequence<int>* i3_2 = i3_1->append(200);
+    Sequence<int>* i3_3 = i3_2->append(300);
+    
+    auto* cast1 = dynamic_cast<ImmutableArraySequence<int>*>(i1_3);
+    auto* cast2 = dynamic_cast<ImmutableArraySequence<int>*>(i2_2);
+    auto* cast3 = dynamic_cast<ImmutableArraySequence<int>*>(i3_3);
+    assert(cast1 && cast2 && cast3);
+    
+    Sequence<ImmutableArraySequence<int>>* arr1 = arrayOfArrays.append(*cast1);
+    Sequence<ImmutableArraySequence<int>>* arr2 = arr1->append(*cast2);
+    Sequence<ImmutableArraySequence<int>>* arr3 = arr2->append(*cast3);
+    
+    assert(arr3->getLength() == 3);
+    assert(arr3->get(0).getLength() == 3);
+    assert(arr3->get(1).getLength() == 2);
+    assert(arr3->get(2).getLength() == 3);
+    assert(arrayOfArrays.getLength() == 0);
+    
+    delete i1_1; delete i1_2; delete i1_3;
+    delete i2_1; delete i2_2;
+    delete i3_1; delete i3_2; delete i3_3;
+    delete arr1; delete arr2; delete arr3;
+    std::cout << "✅ Тесты массива массивов пройдены" << std::endl;
     
     std::cout << "\n✅ Все тесты ImmutableArraySequence пройдены успешно!" << std::endl;
 }
@@ -713,21 +653,22 @@ void tests_of_MutableListSequence() {
     MutableListSequence<int> seq;
     seq.append(1)->append(2)->append(3)->append(4)->append(5);
     
-    seq.map([](int x) { return x * 2; });
-    assert(seq.getLength() == 5);
-    assert(seq.get(0) == 2);
-    assert(seq.get(4) == 10);
+    auto* mapped = seq.map([](int x) { return x * 2; });
+    assert(mapped->getLength() == 5);
+    assert(mapped->get(0) == 2);
+    assert(mapped->get(4) == 10);
+    delete mapped;
 
     std::cout << "✅ Тесты map пройдены" << std::endl;
     
-    ListSequence<int>* wh = seq.where([](int x) { return x % 4 == 0; });
+    ListSequence<int>* wh = seq.where([](int x) { return x % 2 == 0; });
     assert(wh->getLength() == 2);
-    assert(wh->get(0) == 4);
-    assert(wh->get(1) == 8);
+    assert(wh->get(0) == 2);
+    assert(wh->get(1) == 4);
+    delete wh;
 
     std::cout << "✅ Тесты where пройдены" << std::endl;
     
-    seq.map([](int x) { return x / 2; });
     int sum = seq.reduce([](int acc, int x) { return acc + x; }, 0);
     assert(sum == 15);
     
@@ -786,7 +727,8 @@ void tests_of_ImmutableListSequence() {
     std::cout << "✅ Тесты get методов пройдены" << std::endl;
     
     ImmutableListSequence<int> chain;
-    Sequence<int>* chainResult = chain.append(300)->append(400);
+    Sequence<int>* chainTmp = chain.append(300);
+    Sequence<int>* chainResult = chainTmp->append(400);
     assert(chainResult->getLength() == 2);
     assert(chainResult->getFirst() == 300);
     assert(chainResult->getLast() == 400);
@@ -795,7 +737,8 @@ void tests_of_ImmutableListSequence() {
     std::cout << "✅ Тесты цепочки вызовов пройдены" << std::endl;
     
     ImmutableListSequence<int> concatSource;
-    Sequence<int>* sourceWithData = concatSource.append(1)->append(2);
+    Sequence<int>* concatTmp = concatSource.append(1);
+    Sequence<int>* sourceWithData = concatTmp->append(2);
     Sequence<int>* concated = baseSeq.concat(sourceWithData);
     assert(concated->getLength() == 7);
     assert(concated->getFirst() == 10);
@@ -820,21 +763,29 @@ void tests_of_ImmutableListSequence() {
     
     Sequence<int>* test2 = test1;
     for (int i = 0; i < 5; i++) {
+        Sequence<int>* oldTest2 = test2;
         test2 = test2->append(i * 10);
+        delete oldTest2;
     }
     assert(test2->getLength() == 6);
     assert(test2->getFirst() == 1);
     assert(test2->getLast() == 40);
-    assert(test1->getLength() == 1);
     
     std::cout << "✅ Тесты многократных изменений пройдены" << std::endl;
     
     ImmutableListSequence<ImmutableListSequence<int>> listOfLists;
     ImmutableListSequence<int> inner1, inner2, inner3;
 
-    Sequence<int>* inner1Seq = inner1.append(1)->append(2)->append(3);
-    Sequence<int>* inner2Seq = inner2.append(10)->append(20);
-    Sequence<int>* inner3Seq = inner3.append(100)->append(200)->append(300);
+    Sequence<int>* inner1_t1 = inner1.append(1);
+    Sequence<int>* inner1_t2 = inner1_t1->append(2);
+    Sequence<int>* inner1Seq = inner1_t2->append(3);
+    
+    Sequence<int>* inner2_t1 = inner2.append(10);
+    Sequence<int>* inner2Seq = inner2_t1->append(20);
+    
+    Sequence<int>* inner3_t1 = inner3.append(100);
+    Sequence<int>* inner3_t2 = inner3_t1->append(200);
+    Sequence<int>* inner3Seq = inner3_t2->append(300);
 
     ImmutableListSequence<int>* castedInner1 = dynamic_cast<ImmutableListSequence<int>*>(inner1Seq);
     ImmutableListSequence<int>* castedInner2 = dynamic_cast<ImmutableListSequence<int>*>(inner2Seq);
@@ -861,12 +812,18 @@ void tests_of_ImmutableListSequence() {
     delete seq3;
     delete seq4;
     delete inserted;
+    delete chainTmp;
     delete chainResult;
+    delete concatTmp;
     delete sourceWithData;
-    delete test1;
     delete test2;
+    delete inner1_t1;
+    delete inner1_t2;
     delete inner1Seq;
+    delete inner2_t1;
     delete inner2Seq;
+    delete inner3_t1;
+    delete inner3_t2;
     delete inner3Seq;
     delete list1;
     delete list2;

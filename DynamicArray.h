@@ -2,7 +2,11 @@
 #define DYNAMICARRAY_H
 
 #include "IndexOutOfRange.h"
+#include "IEnumerator.h"
+
+#include <iostream> 
 #include <cmath>
+
 
 template <class T> 
 class DynamicArray {
@@ -14,7 +18,7 @@ class DynamicArray {
     public:
         DynamicArray();
         DynamicArray(int size);
-        DynamicArray(T* items, int count);
+        DynamicArray(T *items, int count);
         DynamicArray(const DynamicArray<T> & dynamicArray); 
         ~DynamicArray();
 
@@ -65,7 +69,7 @@ class DynamicArray {
         void resize(int newSize);
         void set(int index, T value);
 
-        IEnumerator<T>* getEnumerator() const;
+        IEnumerator<T> *getEnumerator() const;
 };
 
 template <class T>
@@ -78,7 +82,7 @@ template <class T>
 DynamicArray<T>::DynamicArray(const DynamicArray<T> & other) : DynamicArray(other.array, other.size) {}
 
 template <class T>
-DynamicArray<T>::DynamicArray(T* items, int count) : array(nullptr), size(count), capacity(count) {
+DynamicArray<T>::DynamicArray(T *items, int count) : array(nullptr), size(count), capacity(count) {
     array = new T[capacity];
     if (items != nullptr) {
         for (int i = 0; i < count; i++) {
@@ -136,7 +140,7 @@ void DynamicArray<T>::resize(int newSize) {
         else {
             capacity = std::ceil(static_cast<double>(newSize)/capacity) * capacity;
         }
-        T* newArray = new T[capacity];
+        T *newArray = new T[capacity];
         for (int i = 0; i < size; i++) {
             newArray[i] = array[i];
         }
@@ -148,7 +152,7 @@ void DynamicArray<T>::resize(int newSize) {
 
 template <class T>
 void DynamicArray<T>::set(int index, T value) {
-    if (index < size & index >= 0) {
+    if (index >= 0 && index < size) {
         array[index] = value;
     }
     else {
@@ -157,15 +161,17 @@ void DynamicArray<T>::set(int index, T value) {
 }
 
 template <class T>
-IEnumerator<T>* DynamicArray<T>::getEnumerator() const {
+IEnumerator<T> *DynamicArray<T>::getEnumerator() const {
     class DynamicArrayEnumerator : public IEnumerator<T> {
         private:
-            T* data;
+            T *data;
             int current_index;
             int length;
             
         public:
-            DynamicArrayEnumerator(T* arr, int len) : data(arr), current_index(-1), length(len) {}
+            DynamicArrayEnumerator(T *arr, int len) : data(arr), current_index(-1), length(len) {}
+            
+            ~DynamicArrayEnumerator() = default;
             
             bool moveNext() override {
                 current_index++;
@@ -178,9 +184,9 @@ IEnumerator<T>* DynamicArray<T>::getEnumerator() const {
                 }
                 return data[current_index];
             }
-        };
-        
-        return new DynamicArrayEnumerator(array, size);
+    };
+    
+    return new DynamicArrayEnumerator(array, size);
 }
 
 #endif

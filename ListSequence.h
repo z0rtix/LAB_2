@@ -5,6 +5,8 @@
 #include "LinkedList.h"
 #include "DynamicArray.h"
 
+#include <iostream>
+
 template <class T>
 class ListSequence: public Sequence<T> {
     private:
@@ -35,7 +37,10 @@ class ListSequence: public Sequence<T> {
 
         ListSequence<T>& operator=(const ListSequence<T>& other) {
             if (this != &other) {
-                *list = *other.list;
+                list->clear();
+                for (int i = 0; i < other.getLength(); i++) {
+                    list->append(other.get(i));
+                }
             }
             return *this;
         }
@@ -76,12 +81,12 @@ ListSequence<T>::ListSequence(T *items, int count) {
 
 template <class T>
 ListSequence<T>::ListSequence(LinkedList<T>* linkedList) {
-    list = *linkedList;
+    list = new LinkedList<T>(*linkedList);
 }
 
 template <class T>
-ListSequence<T>::ListSequence(const ListSequence <T> & list) {
-    this->list = new LinkedList<T>(*list.list);
+ListSequence<T>::ListSequence(const ListSequence<T>& other) {
+    list = new LinkedList<T>(*other.list);
 }
 
 template <class T>
@@ -158,11 +163,14 @@ ListSequence<T>* ListSequence<T>::clear() {
 template <class T>
 ListSequence<T>* ListSequence<T>::concat(Sequence<T>* list) const {
     ListSequence<T>* result = this->copy();
+    result->list->clear();
     
+    for (int i = 0; i < getLength(); i++) {
+        result->list->append(this->get(i));
+    }
     for (int i = 0; i < list->getLength(); i++) {
         result->list->append(list->get(i));
     }
-    
     return result;
 }
 
@@ -172,7 +180,8 @@ ListSequence<T>* ListSequence<T>::getSubsequence(int startIndex, int endIndex) c
         throw IndexOutOfRange();
     }
     
-    ListSequence<T>* result = this->copy()->clear();
+    ListSequence<T>* result = this->copy(); 
+    result->list->clear();
     
     for (int i = startIndex; i <= endIndex; i++) {
         result->list->append(this->get(i));
@@ -189,7 +198,7 @@ IEnumerator<T>* ListSequence<T>::getEnumerator() const {
 template <class T>
 template <typename Func>
 ListSequence<T>* ListSequence<T>::map(Func mapper) {
-    ListSequence<T>* obj = instance();
+    ListSequence<T>* obj = this->copy();
     for (int i = 0; i < list->getLength(); i++) {
         obj->list->set(i, mapper(list->get(i)));
     }
@@ -209,14 +218,15 @@ U ListSequence<T>::reduce(Func reducer, U initial) {
 template <class T>
 template <typename Func>
 ListSequence<T>* ListSequence<T>::where(Func predicate) {
-    ListSequence<T>* result = instance()->copy()->clear();
+    ListSequence<T>* result = this->copy();
+    result->list->clear();
     for (int i = 0; i < getLength(); i++) {
         if (predicate(get(i))) {
             result->list->append(get(i));
         }
     }
     return result;
-};
+}
 
 
 template <class T>

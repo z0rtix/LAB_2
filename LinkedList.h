@@ -2,6 +2,10 @@
 #define LINKEDLIST_H
 
 #include "IndexOutOfRange.h"
+#include "IEnumerator.h"
+
+#include <iostream> 
+
 
 template <class T>
 class LinkedList {
@@ -56,6 +60,19 @@ class LinkedList {
             return current->data;
         }
 
+        LinkedList<T>& operator=(const LinkedList<T>& other) {
+            if (this != &other) {
+                clear();
+                
+                Node* current = other.first;
+                while (current != nullptr) {
+                    append(current->data);
+                    current = current->next;
+                }
+            }
+            return *this;
+        }
+
         T getFirst() const;
         T getLast() const;
         T get(int index) const;
@@ -70,9 +87,9 @@ class LinkedList {
         void set(int index, T item);
         void clear();
 
-        LinkedList<T>* concat(LinkedList<T> *list);
-        LinkedList<T>* getSubList(int startIndex, int endIndex);
-        IEnumerator<T>* getEnumerator() const;
+        LinkedList<T> *concat(LinkedList<T> *list);
+        LinkedList<T> *getSubList(int startIndex, int endIndex);
+        IEnumerator<T> *getEnumerator() const;
 };
 
 
@@ -172,7 +189,7 @@ bool LinkedList<T>::isEmpty() const {
 
 template <class T>
 void LinkedList<T>::print() const {
-    Node* current = first;
+    Node *current = first;
     std::cout << "{";
     while (current != nullptr) {
         std::cout << current->data;
@@ -236,7 +253,7 @@ void LinkedList<T>::set(int index, T item) {
         throw IndexOutOfRange();
     }
     
-    Node* current = first;
+    Node *current = first;
     for (int i = 0; i < index; i++) {
         current = current->next;
     }
@@ -248,9 +265,9 @@ template <class T>
 void LinkedList<T>::clear() {
     if (first == nullptr) return;
     
-    Node* current = first;
+    Node *current = first;
     while (current != nullptr) {
-        Node* temp = current;
+        Node *temp = current;
         current = current->next;
         delete temp;
     }
@@ -260,7 +277,7 @@ void LinkedList<T>::clear() {
 }
 
 template <class T>
-LinkedList<T>* LinkedList<T>::concat(LinkedList<T> *list) {
+LinkedList<T> *LinkedList<T>::concat(LinkedList<T> *list) {
     LinkedList<T> *newList = new LinkedList<T>(*this);
     Node *current = list->first;
     while (current != nullptr) {
@@ -271,7 +288,7 @@ LinkedList<T>* LinkedList<T>::concat(LinkedList<T> *list) {
 }
 
 template <class T>
-LinkedList<T>* LinkedList<T>::getSubList(int start, int end) {
+LinkedList<T> *LinkedList<T>::getSubList(int start, int end) {
     if (start < 0 || start >= size || end < 0 || end >= size || start > end) {
         throw IndexOutOfRange();
     }
@@ -283,15 +300,17 @@ LinkedList<T>* LinkedList<T>::getSubList(int start, int end) {
 }
 
 template <class T>
-IEnumerator<T>* LinkedList<T>::getEnumerator() const {
+IEnumerator<T> *LinkedList<T>::getEnumerator() const {
     class LinkedListEnumerator : public IEnumerator<T> {
         private:
-            Node* next;
-            Node* current_obj;
+            Node *next;
+            Node *current_obj;
             bool started;
         
         public:
-            LinkedListEnumerator(Node* first) : next(first), current_obj(nullptr), started(false) {}
+            LinkedListEnumerator(Node *first) : next(first), current_obj(nullptr), started(false) {}
+
+            ~LinkedListEnumerator() = default;
             
             bool moveNext() override {
                 if (!started) {

@@ -5,16 +5,19 @@
 #include "DynamicArray.h"
 #include "LinkedList.h"
 
+#include <iostream>
+
+
 template <class T>
 class ArraySequence : public Sequence<T> {
     protected:
         DynamicArray<T> *array;
-        virtual ArraySequence<T>* instance() = 0;
+        virtual ArraySequence<T> *instance() = 0;
 
     public:
         ArraySequence();
         ArraySequence(int size);
-        ArraySequence(T* items, int count);
+        ArraySequence(T *items, int count);
         ArraySequence(const DynamicArray<T>& otherArray);
         ArraySequence(const ArraySequence<T>& other); 
         ArraySequence(const LinkedList<T>& list);
@@ -49,20 +52,20 @@ class ArraySequence : public Sequence<T> {
         bool isEmpty() const override;
         void print() const override;
         
-        ArraySequence<T>* append(T item) override;
-        ArraySequence<T>* prepend(T item) override;
-        ArraySequence<T>* insertAt(T item, int index) override;
-        ArraySequence<T>* clear() override;
+        ArraySequence<T> *append(T item) override;
+        ArraySequence<T> *prepend(T item) override;
+        ArraySequence<T> *insertAt(T item, int index) override;
+        ArraySequence<T> *clear() override;
 
-        ArraySequence<T>* concat(Sequence<T>* list) const override;
-        ArraySequence<T>* getSubsequence(int     startIndex, int endIndex) const override;
-        IEnumerator<T>* getEnumerator() const;
+        ArraySequence<T> *concat(Sequence<T> *list) const override;
+        ArraySequence<T> *getSubsequence(int     startIndex, int endIndex) const override;
+        IEnumerator<T> *getEnumerator() const;
 
-        virtual ArraySequence<T>* copy() const = 0;
+        virtual ArraySequence<T> *copy() const = 0;
 
-        template <typename Func> ArraySequence<T>* map(Func mapper);
+        template <typename Func> ArraySequence<T> *map(Func mapper);
         template <typename Func, typename U> U reduce(Func reducer, U initial);
-        template <typename Func> ArraySequence<T>* where(Func predicate);
+        template <typename Func> ArraySequence<T> *where(Func predicate);
 };
 
 template <class T>
@@ -76,7 +79,7 @@ ArraySequence<T>::ArraySequence(int size) {
 }
 
 template <class T>
-ArraySequence<T>::ArraySequence(T* items, int count) {
+ArraySequence<T>::ArraySequence(T *items, int count) {
     array = new DynamicArray<T>(items, count);
 }
 
@@ -134,7 +137,7 @@ void ArraySequence<T>::print() const {
 }
 
 template <class T>
-ArraySequence<T>* ArraySequence<T>::append(T item) {
+ArraySequence<T> *ArraySequence<T>::append(T item) {
     ArraySequence<T> *obj = instance();
     int newSize = obj->array->getSize() + 1;
     obj->array->resize(newSize);
@@ -143,8 +146,8 @@ ArraySequence<T>* ArraySequence<T>::append(T item) {
 }
 
 template <class T>
-ArraySequence<T>* ArraySequence<T>::prepend(T item) {
-    ArraySequence<T>* obj = instance();
+ArraySequence<T> *ArraySequence<T>::prepend(T item) {
+    ArraySequence<T> *obj = instance();
     int oldSize = obj->array->getSize();
     int newSize = oldSize + 1;
     obj->array->resize(newSize);
@@ -157,8 +160,8 @@ ArraySequence<T>* ArraySequence<T>::prepend(T item) {
 }
 
 template <class T>
-ArraySequence<T>* ArraySequence<T>::insertAt(T item, int index) {
-    ArraySequence<T>* obj = instance();
+ArraySequence<T> *ArraySequence<T>::insertAt(T item, int index) {
+    ArraySequence<T> *obj = instance();
     int currentSize = obj->array->getSize();
     if (index < 0 || index > currentSize) {
         throw IndexOutOfRange();
@@ -176,7 +179,7 @@ ArraySequence<T>* ArraySequence<T>::insertAt(T item, int index) {
 }
 
 template <class T>
-ArraySequence<T>* ArraySequence<T>::clear() {
+ArraySequence<T> *ArraySequence<T>::clear() {
     ArraySequence<T> *obj = instance();
     obj->array->resize(0);
     return obj;
@@ -185,23 +188,29 @@ ArraySequence<T>* ArraySequence<T>::clear() {
 template <class T>
 ArraySequence<T>* ArraySequence<T>::concat(Sequence<T>* list) const {
     ArraySequence<T>* result = this->copy();
+    result->array->resize(0);
     
+    for (int i = 0; i < getLength(); i++) {
+        int newSize = result->array->getSize() + 1;
+        result->array->resize(newSize);
+        result->array->set(newSize - 1, get(i));
+    }
     for (int i = 0; i < list->getLength(); i++) {
         int newSize = result->array->getSize() + 1;
         result->array->resize(newSize);
         result->array->set(newSize - 1, list->get(i));
     }
-    
     return result;
 }
 
 template <class T>
-ArraySequence<T>* ArraySequence<T>::getSubsequence(int startIndex, int endIndex) const {
+ArraySequence<T> *ArraySequence<T>::getSubsequence(int startIndex, int endIndex) const { 
     if (startIndex < 0 || endIndex >= getLength() || startIndex > endIndex) {
         throw IndexOutOfRange();
     }
     
-    ArraySequence<T>* result = this->copy()->clear();
+    ArraySequence<T> *result = this->copy();
+    result->array->resize(0);
     
     for (int i = startIndex; i <= endIndex; i++) {
         int newSize = result->array->getSize() + 1;
@@ -213,14 +222,14 @@ ArraySequence<T>* ArraySequence<T>::getSubsequence(int startIndex, int endIndex)
 }
 
 template <class T>
-IEnumerator<T>* ArraySequence<T>::getEnumerator() const {
+IEnumerator<T> *ArraySequence<T>::getEnumerator() const {
     return array->getEnumerator();
 }
 
 template <class T>
 template <typename Func>
-ArraySequence<T>* ArraySequence<T>::map(Func mapper) {
-    ArraySequence<T>* obj = instance();
+ArraySequence<T> *ArraySequence<T>::map(Func mapper) {
+    ArraySequence<T> *obj = this->copy();
     for (int i = 0; i < array->getSize(); i++) {
         obj->array->set(i, mapper(array->get(i)));
     }
@@ -240,7 +249,9 @@ U ArraySequence<T>::reduce(Func reducer, U initial) {
 template <class T>
 template <typename Func>
 ArraySequence<T>* ArraySequence<T>::where(Func predicate) {
-    ArraySequence<T>* result = instance()->copy()->clear();
+    ArraySequence<T>* result = this->copy();
+    result->array->resize(0);
+    
     for (int i = 0; i < getLength(); i++) {
         if (predicate(get(i))) {
             int newSize = result->array->getSize() + 1;
@@ -255,17 +266,17 @@ ArraySequence<T>* ArraySequence<T>::where(Func predicate) {
 template <class T>
 class MutableArraySequence : public ArraySequence<T> {
     private:
-        ArraySequence<T>* instance() override {
+        ArraySequence<T> *instance() override {
             return this;
         }
 
     public:
         MutableArraySequence() : ArraySequence<T>() {}
         MutableArraySequence(int size) : ArraySequence<T>(size) {}
-        MutableArraySequence(T* items, int count) : ArraySequence<T>(items, count) {}
+        MutableArraySequence(T *items, int count) : ArraySequence<T>(items, count) {}
         MutableArraySequence(const ArraySequence<T>& other) : ArraySequence<T>(other) {}
 
-        ArraySequence<T>* copy() const override {
+        ArraySequence<T> *copy() const override {
             return new MutableArraySequence<T>(*this);
         }
 };
@@ -273,17 +284,17 @@ class MutableArraySequence : public ArraySequence<T> {
 template <class T>
 class ImmutableArraySequence : public ArraySequence<T> {
     private:
-        ArraySequence<T>* instance() override {
+        ArraySequence<T> *instance() override {
             return new ImmutableArraySequence<T>(*this);
         }
 
     public:
         ImmutableArraySequence() : ArraySequence<T>() {}
         ImmutableArraySequence(int size) : ArraySequence<T>(size) {}
-        ImmutableArraySequence(T* items, int count) : ArraySequence<T>(items, count) {}
+        ImmutableArraySequence(T *items, int count) : ArraySequence<T>(items, count) {}
         ImmutableArraySequence(const ArraySequence<T>& other) : ArraySequence<T>(other) {}
 
-        ArraySequence<T>* copy() const override {
+        ArraySequence<T> *copy() const override {
             return new ImmutableArraySequence<T>(*this);
         }
 };
