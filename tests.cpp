@@ -1,10 +1,10 @@
-#include <iostream>
-#include <cassert>
-
 #include "DynamicArray.h"
 #include "LinkedList.h"
 #include "ArraySequence.h"
 #include "ListSequence.h"
+
+#include <iostream>
+#include <cassert>
 
 
 void tests_of_DynamicArray() {

@@ -3,6 +3,7 @@
 
 #include "IEnumerator.h"
 
+
 template <class T>
 class Sequence {
     public:
