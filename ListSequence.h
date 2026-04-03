@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+
 template <class T>
 class ListSequence: public Sequence<T> {
     private:

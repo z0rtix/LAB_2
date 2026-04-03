@@ -1,6 +1,8 @@
 #include "tests.h"
 #include "menu.h"
+
 #include <iostream>
+
 
 int main() {
     tests_of_DynamicArray();
