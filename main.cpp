@@ -12,7 +12,7 @@ int main() {
     tests_of_MutableListSequence();
     tests_of_ImmutableListSequence();
 
-    console_menu_mode();
+    startMenu();
 
     return 0;
 }
