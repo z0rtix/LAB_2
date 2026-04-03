@@ -59,7 +59,7 @@ class ArraySequence : public Sequence<T> {
 
         ArraySequence<T> *concat(Sequence<T> *list) const override;
         ArraySequence<T> *getSubsequence(int     startIndex, int endIndex) const override;
-        IEnumerator<T> *getEnumerator() const;
+        IEnumerator<T> *getEnumerator() const override;
 
         virtual ArraySequence<T> *copy() const = 0;
 

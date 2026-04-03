@@ -60,7 +60,7 @@ class ListSequence: public Sequence<T> {
 
         ListSequence<T> *concat(Sequence<T> *sequence) const override;
         ListSequence<T> *getSubsequence(int startIndex, int endIndex) const override;
-        IEnumerator<T> *getEnumerator() const;
+        IEnumerator<T> *getEnumerator() const override;
 
         virtual ListSequence<T> *copy() const = 0;
 

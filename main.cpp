@@ -1,4 +1,5 @@
 #include "tests.h"
+#include "menu.h"
 #include <iostream>
 
 int main() {
@@ -8,6 +9,8 @@ int main() {
     tests_of_ImmutableArraySequence();
     tests_of_MutableListSequence();
     tests_of_ImmutableListSequence();
+
+    console_menu_mode();
 
     return 0;
 }
