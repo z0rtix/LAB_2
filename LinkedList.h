@@ -85,6 +85,10 @@ class LinkedList {
         void prepend(T item); 
         void insertAt(T item, int index);
         void set(int index, T item);
+
+        void removeFirst();
+        void removeLast();
+        void removeAt(int index);
         void clear();
 
         LinkedList<T> *concat(LinkedList<T> *list);
@@ -259,6 +263,49 @@ void LinkedList<T>::set(int index, T item) {
     }
     
     current->data = item;
+}
+
+template <class T>
+void LinkedList<T>::removeFirst() {
+    if (size == 0) throw IndexOutOfRange();
+    Node *old = first;
+    first = first->next;
+    delete old;
+    size--;
+    if (size == 0) last = nullptr;
+}
+
+template <class T>
+void LinkedList<T>::removeLast() {
+    if (size == 0) throw IndexOutOfRange();
+    if (size == 1) {
+        delete first;
+        first = last = nullptr;
+    } else {
+        Node *current = first;
+        while (current->next != last) {
+            current = current->next;
+        }
+        delete last;
+        current->next = nullptr;
+        last = current;
+    }
+    size--;
+}
+
+template <class T>
+void LinkedList<T>::removeAt(int index) {
+    if (index < 0 || index >= size) throw IndexOutOfRange();
+    if (index == 0) return removeFirst();
+    if (index == size - 1) return removeLast();
+    Node *prev = first;
+    for (int i = 0; i < index - 1; i++) {
+        prev = prev->next;
+    }
+    Node *toDelete = prev->next;
+    prev->next = toDelete->next;
+    delete toDelete;
+    size--;
 }
 
 template <class T>

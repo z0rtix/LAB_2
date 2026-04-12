@@ -55,13 +55,17 @@ class ArraySequence : public Sequence<T> {
         ArraySequence<T> *append(T item) override;
         ArraySequence<T> *prepend(T item) override;
         ArraySequence<T> *insertAt(T item, int index) override;
+
+        ArraySequence<T> *removeFirst() override;
+        ArraySequence<T> *removeLast() override;
+        ArraySequence<T> *removeAt(int index) override;
         ArraySequence<T> *clear() override;
 
         ArraySequence<T> *concat(Sequence<T> *list) const override;
-        ArraySequence<T> *getSubsequence(int     startIndex, int endIndex) const override;
-        IEnumerator<T> *getEnumerator() const override;
+        ArraySequence<T> *getSubsequence(int startIndex, int endIndex) const override;
+        IEnumerator<T> *getEnumerator() const;
 
-        virtual ArraySequence<T> *copy() const = 0;
+        virtual ArraySequence<T> *copy() const override = 0;
 
         template <typename Func> ArraySequence<T> *map(Func mapper);
         template <typename Func, typename U> U reduce(Func reducer, U initial);
@@ -175,6 +179,50 @@ ArraySequence<T> *ArraySequence<T>::insertAt(T item, int index) {
 
     obj->array->set(index, item);
 
+    return obj;
+}
+
+template <class T>
+ArraySequence<T> *ArraySequence<T>::removeFirst() {
+    if (getLength() == 0) {
+        throw IndexOutOfRange();
+    }
+    ArraySequence<T> *obj = instance();
+    int newSize = obj->array->getSize() - 1;
+    if (newSize == 0) {
+        obj->array->resize(0);
+    } else {
+        for (int i = 1; i < obj->array->getSize(); ++i) {
+            obj->array->set(i - 1, obj->array->get(i));
+        }
+        obj->array->resize(newSize);
+    }
+    return obj;
+}
+
+template <class T>
+ArraySequence<T> *ArraySequence<T>::removeLast() {
+    if (getLength() == 0) {
+        throw IndexOutOfRange();
+    }
+    ArraySequence<T> *obj = instance();
+    int newSize = obj->array->getSize() - 1;
+    obj->array->resize(newSize);
+    return obj;
+}
+
+template <class T>
+ArraySequence<T> *ArraySequence<T>::removeAt(int index) {
+    if (index < 0 || index >= getLength()) {
+        throw IndexOutOfRange();
+    }
+    ArraySequence<T> *obj = instance();
+    int oldSize = obj->array->getSize();
+    int newSize = oldSize - 1;
+    for (int i = index + 1; i < oldSize; ++i) {
+        obj->array->set(i - 1, obj->array->get(i));
+    }
+    obj->array->resize(newSize);
     return obj;
 }
 

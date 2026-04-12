@@ -57,13 +57,17 @@ class ListSequence: public Sequence<T> {
         ListSequence<T> *append(T item) override;
         ListSequence<T> *prepend(T item) override;
         ListSequence<T> *insertAt(T item, int index) override;
+
+        ListSequence<T>* removeFirst() override;
+        ListSequence<T>* removeLast() override;
+        ListSequence<T>* removeAt(int index) override;
         ListSequence<T> *clear() override;
 
         ListSequence<T> *concat(Sequence<T> *sequence) const override;
         ListSequence<T> *getSubsequence(int startIndex, int endIndex) const override;
         IEnumerator<T> *getEnumerator() const override;
 
-        virtual ListSequence<T> *copy() const = 0;
+        virtual ListSequence<T>* copy() const override = 0;
 
         template <typename Func> ListSequence<T> *map(Func mapper);
         template <typename Func, typename U> U reduce(Func reducer, U initial);
@@ -151,6 +155,30 @@ template <class T>
 ListSequence<T> *ListSequence<T>::insertAt(T item, int index) {
     ListSequence<T> *obj = instance();
     obj->list->insertAt(item, index);
+    return obj;
+}
+
+template <class T>
+ListSequence<T>* ListSequence<T>::removeFirst() {
+    if (getLength() == 0) throw IndexOutOfRange();
+    ListSequence<T> *obj = instance();
+    obj->list->removeFirst();
+    return obj;
+}
+
+template <class T>
+ListSequence<T>* ListSequence<T>::removeLast() {
+    if (getLength() == 0) throw IndexOutOfRange();
+    ListSequence<T> *obj = instance();
+    obj->list->removeLast();
+    return obj;
+}
+
+template <class T>
+ListSequence<T>* ListSequence<T>::removeAt(int index) {
+    if (index < 0 || index >= getLength()) throw IndexOutOfRange();
+    ListSequence<T> *obj = instance();
+    obj->list->removeAt(index);
     return obj;
 }
 

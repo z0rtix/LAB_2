@@ -20,12 +20,17 @@ class Sequence {
         virtual Sequence<T> *append(T item) = 0;
         virtual Sequence<T> *prepend(T item) = 0;
         virtual Sequence<T> *insertAt(T item, int index) = 0;
+
+        virtual Sequence<T> *removeFirst() = 0;
+        virtual Sequence<T> *removeLast() = 0;
+        virtual Sequence<T> *removeAt(int index) = 0;
         virtual Sequence<T> *clear() = 0;
 
         virtual Sequence<T> *concat(Sequence<T> *list) const = 0;
         virtual Sequence<T> *getSubsequence(int startIndex, int endIndex) const = 0;
-
         virtual IEnumerator<T> *getEnumerator() const = 0;
+
+        virtual Sequence<T> *copy() const = 0;
 };
 
 #endif
