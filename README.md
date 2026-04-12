@@ -1,39 +1,68 @@
-# Лабораторная работа №2
-## Динамический массив, связанный список и последовательность на языке C++
+# Лабораторная работа №2: Полиморфные последовательности (C++)
 
-### Описание
-Реализация системы линейных структур данных на языке C++ с использованием ООП и шаблонов. Проект включает три основных АТД: DynamicArray (динамический массив), LinkedList (связный список) и Sequence (абстрактная последовательность). Реализованы изменяемые (mutable) и неизменяемые (immutable) версии последовательностей.
+Демонстрация работы полиморфных контейнеров – динамического массива, связного списка и последовательности (Sequence) с поддержкой **изменяемых (mutable)** и **неизменяемых (immutable)** версий.  
+Реализовано в рамках курса информатики (2 семестр) на основе [ТЗ]().
+
+## Структура проекта
+
+- `DynamicArray.h` – шаблонный динамический массив с геометрическим ростом, операторами `[]`, `=`, `<<`, энумератором `IEnumerator`.  
+- `LinkedList.h` – шаблонный односвязный список с аналогичным интерфейсом.  
+- `Sequence.h` – абстрактный интерфейс для линейных структур (чисто виртуальные методы).  
+- `ArraySequence.h` – реализация `Sequence` на основе `DynamicArray`. Содержит общую логику `append`, `prepend`, `insertAt`, `clear` через виртуальный метод `instance()`.  
+- `ListSequence.h` – реализация `Sequence` на основе `LinkedList` (аналогично).  
+- `IEnumerator.h` – интерфейс для итераторов (перебор элементов).  
+- `IndexOutOfRange.h` – класс исключения.  
+- `tests.cpp` – модульные тесты (покрытие всех методов, граничные случаи, проверка исключений).  
+- `menu.cpp` / `menu.h` – консольное меню для демонстрации работы (поддержка `int` и `std::string`).  
+- `main.cpp` – точка входа (запуск меню или тестов).  
+- `Makefile` – сборка проекта (флаги `-std=c++17 -Wall -Wextra -g -fsanitize=address`).
+
+## Требования и сборка
+
+### Компилятор
+- C++17 (g++ или clang++)
+
+### Зависимости
+- Стандартная библиотека C++ (без внешних библиотек)
 
 ### Сборка
+```bash
 make
-
+```
 ### Запуск
-./lab2
+```bash
+lab2
+```
 
-### Структура проекта
-lab2/
-├── DynamicArray.h      # Динамический массив
-├── LinkedList.h        # Связный список
-├── Sequence.h          # Абстрактный класс Sequence
-├── ArraySequence.h     # Sequence на основе DynamicArray
-├── ListSequence.h      # Sequence на основе LinkedList
-├── IEnumerator.h       # Интерфейс итератора
-├── IndexOutOfRange.h   # Класс исключения
-├── tests.cpp           # Модульные тесты
-├── main.cpp            # Точка входа
-├── Makefile
-└── README.md
+## Результаты
+Модульные тесты (tests.cpp)
+Все тесты успешно проходят, утечек памяти нет (проверено AddressSanitizer и Valgrind).
 
-### Основные операции
-DynamicArray: конструкторы, getSize, get, set, resize, operator[]
+- `DynamicArray:` создание, копирование, resize, оператор [], исключения, массив массивов.
+- `LinkedList:` создание, append/prepend/insertAt, concat, getSubList, оператор [], копирование, вложенные списки.
+- `MutableArraySequence / MutableListSequence:` проверка изменения текущего объекта, цепочки вызовов, map, reduce, where.
+- `ImmutableArraySequence / ImmutableListSequence:` каждая операция (append, prepend, insertAt, clear, concat, getSubsequence, map, where) создаёт новый объект, исходный не меняется.
 
-LinkedList: конструкторы, getFirst, getLast, get, getLength, append, prepend, concat, getSubList, operator[]
 
-Sequence: getFirst, getLast, get, getLength, append, prepend, insertAt, concat, getSubsequence
+## Консольное меню
+### Позволяет:
+Выбрать тип данных (int или std::string).
+Выбрать тип последовательности (MutableArray, ImmutableArray, MutableList, ImmutableList).
+Создать последовательность с тестовыми данными или пустую.
+Выполнять операции: append, prepend, insertAt, get, getFirst/getLast, clear, getSubsequence, map, reduce, where, энумератор.
+Для immutable последовательностей – после каждой изменяющей операции отображается старая и новая версия, пользователь решает, заменять ли текущую.
 
-ArraySequence/ListSequence: реализуют Sequence в mutable и immutable вариантах
 
-Дополнительно: map, reduce, where, итераторы, перегрузка операторов
+## Особенности реализации
+Отсутствие append в DynamicArray – логика изменения размера вынесена в ArraySequence (разделение ответственности).
+Mutable / Immutable через instance() – общий код операций (append, prepend, insertAt, clear) находится в базовом классе, а наследники переопределяют instance():
+MutableArraySequence → return this;
+ImmutableArraySequence → return new ImmutableArraySequence<T>(*this);
+Методы concat, getSubsequence, map, where всегда возвращают новый объект (даже для mutable) – это соответствует семантике неизменяемых операций.
+Энумератор реализован через внутренние классы DynamicArrayEnumerator и LinkedListEnumerator, возвращается указатель (caller обязан вызвать delete).
+Исключения – IndexOutOfRange выбрасывается при недопустимых индексах.
+Константная корректность – все геттеры и методы, не изменяющие состояние, помечены const.
 
-### Тестирование
-Модульные тесты покрывают все основные операции, граничные случаи и исключения. Тесты реализованы для каждого класса отдельно.
+## Примечания
+Для изменения параметров (размер тестовой выборки) отредактируйте tests.cpp или menu.cpp.
+Для просмотра результатов работы запустите ./lab2 и выберите интерактивный режим.
