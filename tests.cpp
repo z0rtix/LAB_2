@@ -258,6 +258,44 @@ void tests_of_MutableArraySequence() {
     assert(mutable1.get(2) == 150);
     
     std::cout << "✅ Тесты get методов пройдены" << std::endl;
+
+    MutableArraySequence<int> seque;
+    seque.append(10)->append(20)->append(30)->append(40);
+    seque.removeFirst();
+    assert(seque.getLength() == 3);
+    assert(seque.get(0) == 20);
+    assert(seque.get(2) == 40);
+    
+    seque.removeLast();
+    assert(seque.getLength() == 2);
+    assert(seque.get(0) == 20);
+    assert(seque.get(1) == 30);
+    
+    seque.insertAt(25, 1);
+    seque.removeAt(1);
+    assert(seque.getLength() == 2);
+    assert(seque.get(1) == 30);
+    
+    seque.removeFirst();
+    seque.removeFirst();
+    assert(seque.getLength() == 0);
+    
+    bool caught = false;
+    try { seque.removeFirst(); }
+    catch (const IndexOutOfRange&) { caught = true; }
+    assert(caught);
+    
+    caught = false;
+    try { seque.removeLast(); }
+    catch (const IndexOutOfRange&) { caught = true; }
+    assert(caught);
+    
+    caught = false;
+    try { seque.removeAt(0); }
+    catch (const IndexOutOfRange&) { caught = true; }
+    assert(caught);
+
+    std::cout << "✅ Тесты remove пройдены" << std::endl;
     
     mutable1[1] = 999;
     assert(mutable1[1] == 999);
@@ -401,6 +439,38 @@ void tests_of_ImmutableArraySequence() {
     assert(baseSeq.getLength() == 5);
     delete inserted;
     std::cout << "✅ Тесты insertAt пройдены" << std::endl;
+
+    int data2[] = {1, 2, 3, 4};
+    ImmutableArraySequence<int> orig(data2, 4);
+    
+    Sequence<int> *newSeq = orig.removeFirst();
+    assert(newSeq->getLength() == 3);
+    assert(newSeq->get(0) == 2);
+    assert(newSeq->get(1) == 3);
+    assert(newSeq->get(2) == 4);
+    delete newSeq;
+    
+    newSeq = orig.removeLast();
+    assert(newSeq->getLength() == 3);
+    assert(newSeq->get(0) == 1);
+    assert(newSeq->get(1) == 2);
+    assert(newSeq->get(2) == 3);
+    delete newSeq;
+    
+    newSeq = orig.removeAt(1);
+    assert(newSeq->getLength() == 3);
+    assert(newSeq->get(0) == 1);
+    assert(newSeq->get(1) == 3);
+    assert(newSeq->get(2) == 4);
+    delete newSeq;
+    
+    assert(orig.getLength() == 4);
+    assert(orig.get(0) == 1);
+    assert(orig.get(1) == 2);
+    assert(orig.get(2) == 3);
+    assert(orig.get(3) == 4);
+
+    std::cout << "✅ Тесты remove пройдены" << std::endl;
     
     ImmutableArraySequence<int> chain;
     Sequence<int> *c1 = chain.append(300);
@@ -524,6 +594,30 @@ void tests_of_MutableListSequence() {
     assert(mutable1.get(2) == 150);
     
     std::cout << "✅ Тесты get методов пройдены" << std::endl;
+
+    MutableArraySequence<int> seque;
+    seque.append(10)->append(20)->append(30)->append(40);
+    
+    seque.removeFirst();
+    assert(seque.getLength() == 3);
+    assert(seque.get(0) == 20);
+    assert(seque.get(2) == 40);
+    
+    seque.removeLast();
+    assert(seque.getLength() == 2);
+    assert(seque.get(0) == 20);
+    assert(seque.get(1) == 30);
+    
+    seque.insertAt(25, 1);
+    seque.removeAt(1);
+    assert(seque.getLength() == 2);
+    assert(seque.get(1) == 30);
+    
+    seque.removeFirst();
+    seque.removeFirst();
+    assert(seque.getLength() == 0);
+
+    std::cout << "✅ Тесты remove пройдены" << std::endl;
     
     mutable1[1] = 999;
     assert(mutable1[1] == 999);
@@ -725,6 +819,38 @@ void tests_of_ImmutableListSequence() {
     assert(inserted->getLast() == 50);
     
     std::cout << "✅ Тесты get методов пройдены" << std::endl;
+
+    int data2[] = {1, 2, 3, 4};
+    ImmutableListSequence<int> orig(data2, 4);
+    
+    Sequence<int>* newSeq = orig.removeFirst();
+    assert(newSeq->getLength() == 3);
+    assert(newSeq->get(0) == 2);
+    assert(newSeq->get(1) == 3);
+    assert(newSeq->get(2) == 4);
+    delete newSeq;
+    
+    newSeq = orig.removeLast();
+    assert(newSeq->getLength() == 3);
+    assert(newSeq->get(0) == 1);
+    assert(newSeq->get(1) == 2);
+    assert(newSeq->get(2) == 3);
+    delete newSeq;
+    
+    newSeq = orig.removeAt(1);
+    assert(newSeq->getLength() == 3);
+    assert(newSeq->get(0) == 1);
+    assert(newSeq->get(1) == 3);
+    assert(newSeq->get(2) == 4);
+    delete newSeq;
+    
+    assert(orig.getLength() == 4);
+    assert(orig.get(0) == 1);
+    assert(orig.get(1) == 2);
+    assert(orig.get(2) == 3);
+    assert(orig.get(3) == 4);
+
+    std::cout << "✅ Тесты remove пройдены" << std::endl;
     
     ImmutableListSequence<int> chain;
     Sequence<int> *chainTmp = chain.append(300);
