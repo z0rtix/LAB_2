@@ -17,11 +17,11 @@ void tests_of_DynamicArray() {
     assert(arr2.getSize() == 5);
     
     for (int i = 0; i < 3; i++) {
-        arr1.set(i, i  *10);
+        arr1.set(i * 10, i);
         assert(arr1.get(i) == i  *10); 
     }
     for (int i = 0; i < 5; i++) {
-        arr2.set(i, i  *100);
+        arr2.set(i * 100, i);
         assert(arr2.get(i) == i  *100);
     }
     
@@ -34,7 +34,7 @@ void tests_of_DynamicArray() {
         assert(arr3.get(i) == arr1.get(i));
     }
     
-    arr3.set(0, 999);
+    arr3.set(999, 0);
     assert(arr3.get(0) == 999);
     assert(arr1.get(0) == 0);
     
@@ -74,9 +74,9 @@ void tests_of_DynamicArray() {
     std::cout << "✅ Тесты исключений пройдены" << std::endl;
     
     DynamicArray<DynamicArray<int>> arr7(3);
-    arr7.set(0, arr1);
-    arr7.set(1, arr2);
-    arr7.set(2, arr3);
+    arr7.set(arr1, 0);
+    arr7.set(arr2, 1);
+    arr7.set(arr3, 2);
     
     assert(arr7.getSize() == 3);
     assert(arr7.get(0).getSize() == arr1.getSize());

@@ -20,6 +20,7 @@ class Sequence {
         virtual Sequence<T> *append(T item) = 0;
         virtual Sequence<T> *prepend(T item) = 0;
         virtual Sequence<T> *insertAt(T item, int index) = 0;
+        virtual Sequence<T> *set(T item, int index) = 0;
 
         virtual Sequence<T> *removeFirst() = 0;
         virtual Sequence<T> *removeLast() = 0;

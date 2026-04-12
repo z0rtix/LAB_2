@@ -57,6 +57,7 @@ class ListSequence: public Sequence<T> {
         ListSequence<T> *append(T item) override;
         ListSequence<T> *prepend(T item) override;
         ListSequence<T> *insertAt(T item, int index) override;
+        ListSequence<T> *set(T item, int index) override;
 
         ListSequence<T>* removeFirst() override;
         ListSequence<T>* removeLast() override;
@@ -159,6 +160,13 @@ ListSequence<T> *ListSequence<T>::insertAt(T item, int index) {
 }
 
 template <class T>
+ListSequence<T>* ListSequence<T>::set(T item, int index) {
+    ListSequence<T> *obj = instance();
+    obj->list->set(item, index);
+    return obj;
+}
+
+template <class T>
 ListSequence<T>* ListSequence<T>::removeFirst() {
     if (getLength() == 0) throw IndexOutOfRange();
     ListSequence<T> *obj = instance();
@@ -229,7 +237,7 @@ template <typename Func>
 ListSequence<T> *ListSequence<T>::map(Func mapper) {
     ListSequence<T> *obj = this->copy();
     for (int i = 0; i < list->getLength(); i++) {
-        obj->list->set(i, mapper(list->get(i)));
+        obj->list->set(mapper(list->get(i)), i);
     }
     return obj;
 }

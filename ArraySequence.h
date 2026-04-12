@@ -55,6 +55,7 @@ class ArraySequence : public Sequence<T> {
         ArraySequence<T> *append(T item) override;
         ArraySequence<T> *prepend(T item) override;
         ArraySequence<T> *insertAt(T item, int index) override;
+        ArraySequence<T> *set(T item, int index) override;
 
         ArraySequence<T> *removeFirst() override;
         ArraySequence<T> *removeLast() override;
@@ -101,7 +102,7 @@ template <class T>
 ArraySequence<T>::ArraySequence(const LinkedList<T>& list) {
     array = new DynamicArray<T>(list.getLength());
     for (int i = 0; i < list.getLength(); i++) {
-        array->set(i, list.get(i));
+        array->set(list.get(i), i);
     }
 }
 
@@ -145,7 +146,7 @@ ArraySequence<T> *ArraySequence<T>::append(T item) {
     ArraySequence<T> *obj = instance();
     int newSize = obj->array->getSize() + 1;
     obj->array->resize(newSize);
-    obj->array->set(newSize - 1, item);
+    obj->array->set(item, newSize - 1);
     return obj;
 }
 
@@ -157,9 +158,9 @@ ArraySequence<T> *ArraySequence<T>::prepend(T item) {
     obj->array->resize(newSize);
     
     for (int i = oldSize - 1; i >= 0; i--) {
-        obj->array->set(i + 1, obj->array->get(i));
+        obj->array->set(obj->array->get(i), i + 1);
     }
-    obj->array->set(0, item);
+    obj->array->set(item, 0);
     return obj;
 }
 
@@ -174,11 +175,18 @@ ArraySequence<T> *ArraySequence<T>::insertAt(T item, int index) {
     obj->array->resize(currentSize + 1);    
 
     for (int i = currentSize - 1; i >= index; i--) {
-        obj->array->set(i + 1, obj->array->get(i));
+        obj->array->set(obj->array->get(i), i + 1);
     }
 
-    obj->array->set(index, item);
+    obj->array->set(item, index);
 
+    return obj;
+}
+
+template <class T>
+ArraySequence<T> *ArraySequence<T>::set(T item, int index) {
+    ArraySequence<T> *obj = instance();
+    obj->array->set(item, index);
     return obj;
 }
 
@@ -193,7 +201,7 @@ ArraySequence<T> *ArraySequence<T>::removeFirst() {
         obj->array->resize(0);
     } else {
         for (int i = 1; i < obj->array->getSize(); ++i) {
-            obj->array->set(i - 1, obj->array->get(i));
+            obj->array->set(obj->array->get(i), i - 1);
         }
         obj->array->resize(newSize);
     }
@@ -220,7 +228,7 @@ ArraySequence<T> *ArraySequence<T>::removeAt(int index) {
     int oldSize = obj->array->getSize();
     int newSize = oldSize - 1;
     for (int i = index + 1; i < oldSize; ++i) {
-        obj->array->set(i - 1, obj->array->get(i));
+        obj->array->set(obj->array->get(i), i - 1);
     }
     obj->array->resize(newSize);
     return obj;
@@ -241,12 +249,12 @@ ArraySequence<T> *ArraySequence<T>::concat(Sequence<T> *list) const {
     for (int i = 0; i < getLength(); i++) {
         int newSize = result->array->getSize() + 1;
         result->array->resize(newSize);
-        result->array->set(newSize - 1, get(i));
+        result->array->set(get(i), newSize - 1);
     }
     for (int i = 0; i < list->getLength(); i++) {
         int newSize = result->array->getSize() + 1;
         result->array->resize(newSize);
-        result->array->set(newSize - 1, list->get(i));
+        result->array->set(list->get(i), newSize - 1);
     }
     return result;
 }
@@ -263,7 +271,7 @@ ArraySequence<T> *ArraySequence<T>::getSubsequence(int startIndex, int endIndex)
     for (int i = startIndex; i <= endIndex; i++) {
         int newSize = result->array->getSize() + 1;
         result->array->resize(newSize);
-        result->array->set(newSize - 1, this->get(i));
+        result->array->set(this->get(i), newSize - 1);
     }
     
     return result;
@@ -279,7 +287,7 @@ template <typename Func>
 ArraySequence<T> *ArraySequence<T>::map(Func mapper) {
     ArraySequence<T> *obj = this->copy();
     for (int i = 0; i < array->getSize(); i++) {
-        obj->array->set(i, mapper(array->get(i)));
+        obj->array->set(mapper(array->get(i)), i);
     }
     return obj;
 }
@@ -304,7 +312,7 @@ ArraySequence<T> *ArraySequence<T>::where(Func predicate) {
         if (predicate(get(i))) {
             int newSize = result->array->getSize() + 1;
             result->array->resize(newSize);
-            result->array->set(newSize - 1, get(i));
+            result->array->set(get(i), newSize - 1);
         }
     }
     return result;

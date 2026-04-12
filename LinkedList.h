@@ -84,7 +84,7 @@ class LinkedList {
         void append(T item); 
         void prepend(T item); 
         void insertAt(T item, int index);
-        void set(int index, T item);
+        void set(T item, int index);
 
         void removeFirst();
         void removeLast();
@@ -252,7 +252,7 @@ void LinkedList<T>::insertAt(T item, int index) {
 }
 
 template <class T>
-void LinkedList<T>::set(int index, T item) {
+void LinkedList<T>::set(T item, int index) {
     if (index < 0 || index >= size) {
         throw IndexOutOfRange();
     }

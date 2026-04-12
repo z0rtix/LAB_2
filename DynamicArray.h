@@ -67,7 +67,7 @@ class DynamicArray {
         void print() const;
 
         void resize(int newSize);
-        void set(int index, T value);
+        void set(T item, int index);
 
         IEnumerator<T> *getEnumerator() const;
 };
@@ -151,9 +151,9 @@ void DynamicArray<T>::resize(int newSize) {
 }
 
 template <class T>
-void DynamicArray<T>::set(int index, T value) {
+void DynamicArray<T>::set(T item, int index) {
     if (index >= 0 && index < size) {
-        array[index] = value;
+        array[index] = item;
     }
     else {
         throw IndexOutOfRange();
