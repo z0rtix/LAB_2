@@ -34,4 +34,5 @@ class Sequence {
         virtual Sequence<T> *copy() const = 0;
 };
 
+
 #endif

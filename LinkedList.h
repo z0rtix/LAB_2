@@ -14,6 +14,7 @@ class LinkedList {
             T data;
             Node *next;
         };
+        
         Node *first;
         Node *last;
         int size;

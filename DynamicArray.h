@@ -84,12 +84,12 @@ DynamicArray<T>::DynamicArray(const DynamicArray<T> & other) : DynamicArray(othe
 template <class T>
 DynamicArray<T>::DynamicArray(T *items, int count) : array(nullptr), size(count), capacity(count) {
     array = new T[capacity];
+
     if (items != nullptr) {
         for (int i = 0; i < count; i++) {
             array[i] = items[i];
         }
-    }
-    else {
+    } else {
         for (int i = 0; i < count; i++) {
             array[i] = T();
         }
@@ -107,8 +107,7 @@ template <class T>
 T DynamicArray<T>::get(int index) const {
     if (index < size and index >= 0) {
         return array[index];
-    }
-    else {
+    } else {
         throw IndexOutOfRange();
     }
 }
@@ -136,17 +135,19 @@ void DynamicArray<T>::resize(int newSize) {
     if (newSize > capacity) {
         if (capacity == 0) {
             capacity = newSize;
-        }
-        else {
+        } else {
             capacity = std::ceil(static_cast<double>(newSize)/capacity) * capacity;
         }
+
         T *newArray = new T[capacity];
         for (int i = 0; i < size; i++) {
             newArray[i] = array[i];
         }
+
         delete[] array;
         array = newArray;
     }
+
     size = newSize;
 }
 
@@ -154,8 +155,7 @@ template <class T>
 void DynamicArray<T>::set(T item, int index) {
     if (index >= 0 && index < size) {
         array[index] = item;
-    }
-    else {
+    } else {
         throw IndexOutOfRange();
     }
 }
@@ -182,11 +182,13 @@ IEnumerator<T> *DynamicArray<T>::getEnumerator() const {
                 if (current_index < 0 || current_index >= length) {
                     throw IndexOutOfRange();
                 }
+
                 return data[current_index];
             }
     };
     
     return new DynamicArrayEnumerator(array, size);
 }
+
 
 #endif
