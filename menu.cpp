@@ -52,7 +52,14 @@ std::string addBang(const std::string& s) { return s + "!"; }
 std::string rev(const std::string& s) {
     std::string res = s;
     int i = 0, j = res.size()-1;
-    while (i < j) { char t = res[i]; res[i] = res[j]; res[j] = t; i++; j--; }
+
+    while (i < j) {
+        char t = res[i];
+        res[i] = res[j];
+        res[j] = t;
+        i++;
+        j--; }
+        
     return res;
 }
 
