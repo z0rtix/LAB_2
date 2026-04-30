@@ -34,6 +34,21 @@ make
 ./lab2
 ```
 
+## Баллы
+ - Б-1 LinkedList (2 балла) – 2
+ - Б-2 DynamicArray (2 балла) – 2
+ - Б-3 Sequence (2 балла) – 2
+ - Б-3.1.1 ImmutableListSequence (1 балл) – 1
+ - Б-3.1 MutableListSequence (1 балл) – 1
+ - Б-3.2.1 ImmutableArraySequence (1 балл) – 1
+ - Б-3.2 MutableArraySequence (1 балл) – 1
+ - М-2 Map-Reduce (3 балла) – 3 (map, reduce, where, concat)
+ - М-3 Энумератор (3 балла) – 3
+ - М-5 Перегрузка операторов (2 балла) – 2
+ - Тесты (максимум 5) – 5
+ - UI (максимум 5) – 5
+### Итог - 28 баллов
+
 ## Результаты
 Модульные тесты (tests.cpp)
 Все тесты успешно проходят, утечек памяти нет (проверено AddressSanitizer и Valgrind).
