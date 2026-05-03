@@ -48,7 +48,11 @@ std::string toUpper(const std::string& s) {
     for (char& c : res) c = toupper(c);
     return res;
 }
-std::string addBang(const std::string& s) { return s + "!"; }
+
+std::string addBang(const std::string& s) {
+    return s + "!";
+}
+
 std::string rev(const std::string& s) {
     std::string res = s;
     int i = 0, j = res.size()-1;
@@ -64,8 +68,14 @@ std::string rev(const std::string& s) {
 }
 
 
-bool longer3(const std::string& s) { return s.size() > 3; }
-bool startsA(const std::string& s) { return !s.empty() && (s[0]=='a'||s[0]=='A'); }
+bool longer3(const std::string& s) {
+    return s.size() > 3;
+}
+
+bool startsA(const std::string& s) {
+    return !s.empty() && (s[0]=='a'||s[0]=='A');
+}
+
 bool hasE(const std::string& s) {
     for (char c : s) if (c=='e'||c=='E') return true;
     return false;
@@ -77,12 +87,16 @@ std::string concatSpace(const std::string& a, const std::string& b) {
     return a + " " + b;
 }
 
-int sumLen(int acc, const std::string& s) { return acc + s.size(); }
+int sumLen(int acc, const std::string& s) {
+    return acc + s.size();
+}
+
 int chooseDataType() {
     std::cout << "\n=== ВЫБОР ТИПА ДАННЫХ ===\n";
     std::cout << "1 - int\n2 - string\n0 - Выход\n";
     return readInt("> ");
 }
+
 int chooseType() {
     std::cout << "\n=== ВЫБОР ТИПА ПОСЛЕДОВАТЕЛЬНОСТИ ===\n";
     std::cout << "1 - MutableArray\n";
@@ -133,8 +147,14 @@ Sequence<std::string> *createFromArrayString(int type, std::string *arr, int siz
     }
 }
 
-void showInt(Sequence<int> *seq) { seq->print(); }
-void showString(Sequence<std::string> *seq) { seq->print(); }
+void showInt(Sequence<int> *seq) {
+    seq->print();
+}
+
+void showString(Sequence<std::string> *seq) {
+    seq->print();
+}
+
 void showEnumeratorInt(Sequence<int> *seq) {
     IEnumerator<int> *en = seq->getEnumerator();
     std::cout << "Перебор: ";
@@ -142,6 +162,7 @@ void showEnumeratorInt(Sequence<int> *seq) {
     std::cout << std::endl;
     delete en;
 }
+
 void showEnumeratorString(Sequence<std::string> *seq) {
     IEnumerator<std::string> *en = seq->getEnumerator();
     std::cout << "Перебор: ";
@@ -149,6 +170,7 @@ void showEnumeratorString(Sequence<std::string> *seq) {
     std::cout << std::endl;
     delete en;
 }
+
 void workInt(Sequence<int>*& seq, bool isMutable) {
     int run = 1;
     while (run) {
@@ -206,15 +228,12 @@ void workInt(Sequence<int>*& seq, bool isMutable) {
                         std::cout << "✅ Оставлена текущая\n";
                     }
                 }
-            }
-            else if (cmd == 4) {
+            } else if (cmd == 4) {
                 int idx = readInt("Индекс: ");
                 std::cout << "Элемент: " << seq->get(idx) << std::endl;
-            }
-            else if (cmd == 5) {
+            } else if (cmd == 5) {
                 std::cout << "Первый: " << seq->getFirst() << ", Последний: " << seq->getLast() << std::endl;
-            }
-            else if (cmd == 7) {
+            } else if (cmd == 7) {
                 int start = readInt("Начальный индекс: ");
                 int end = readInt("Конечный индекс: ");
                 Sequence<int> *sub = seq->getSubsequence(start, end);
