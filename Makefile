@@ -1,20 +1,19 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -g -fsanitize=address
-LDFLAGS = -fsanitize=address
+CXXFLAGS = -std=c++17 -Wall -Wextra -g
+ASAN_FLAGS = -fsanitize=address
+LDFLAGS = 
 
-SRCS = main.cpp tests.cpp menu.cpp
+SRCS = main.cpp utils.cpp tests.cpp menu.cpp
 OBJS = $(SRCS:.cpp=.o)
 TARGET = lab2
-
-.PHONY: all clean rebuild run valgrind test
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(ASAN_FLAGS) -o $@ $^ $(LDFLAGS)
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(ASAN_FLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS) $(TARGET)
@@ -24,9 +23,8 @@ rebuild: clean all
 run: $(TARGET)
 	./$(TARGET)
 
-test: run
-
-valgrind: $(TARGET)
+valgrind: clean
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRCS) $(LDFLAGS)
 	valgrind --leak-check=full --show-leak-kinds=all ./$(TARGET)
 
 debug: $(TARGET)

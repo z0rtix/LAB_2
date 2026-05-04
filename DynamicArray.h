@@ -4,7 +4,6 @@
 #include "IndexOutOfRange.h"
 #include "IEnumerator.h"
 
-#include <iostream> 
 #include <cmath>
 
 
@@ -19,58 +18,23 @@ class DynamicArray {
         DynamicArray();
         DynamicArray(int size);
         DynamicArray(T *items, int count);
-        DynamicArray(const DynamicArray<T> & dynamicArray); 
+        DynamicArray(const DynamicArray<T> &dynamicArray); 
         ~DynamicArray();
 
-        friend std::ostream& operator<<(std::ostream& os, const DynamicArray<T>& obj) {
-            os << "[";
-            for (int i = 0; i < obj.size; i++) {
-                os << obj.array[i];
-                if (i < obj.size - 1) {
-                    os << ", ";
-                }
-            }
-            os << "]";
-            return os;
-        }
-
-        const T& operator[](int index) const {
-            if (index < 0 || index >= size) {
-                throw IndexOutOfRange();
-            }
-            return array[index];
-        }
-
-        T& operator[](int index) {
-            if (index < 0 || index >= size) {
-                throw IndexOutOfRange();
-            }
-            return array[index];
-        }
-
-        DynamicArray<T>& operator=(const DynamicArray<T> &other) {
-            if (this != &other) {
-                delete[] array;
-                size = other.size;
-                capacity = other.capacity;
-                array = new T[capacity];
-                for (int i = 0; i < size; i++) {
-                    array[i] = other.array[i];
-                }
-            }
-            return *this;
-        }
+        T &operator[](int index);
+        const T &operator[](int index) const;
+        DynamicArray<T> &operator=(const DynamicArray<T> &other);
 
         T get(int index) const;
         int getSize() const;
         bool isEmpty() const;
-        void print() const;
 
         void resize(int newSize);
         void set(T item, int index);
 
         IEnumerator<T> *getEnumerator() const;
 };
+
 
 template <class T>
 DynamicArray<T>::DynamicArray() : DynamicArray(nullptr, 0) {}
@@ -79,7 +43,7 @@ template <class T>
 DynamicArray<T>::DynamicArray(int size) : DynamicArray(nullptr, size) {}
 
 template <class T>
-DynamicArray<T>::DynamicArray(const DynamicArray<T> & other) : DynamicArray(other.array, other.size) {}
+DynamicArray<T>::DynamicArray(const DynamicArray<T> &other) : DynamicArray(other.array, other.size) {}
 
 template <class T>
 DynamicArray<T>::DynamicArray(T *items, int count) : array(nullptr), size(count), capacity(count) {
@@ -103,6 +67,37 @@ DynamicArray<T>::~DynamicArray() {
     }
 }
 
+
+template <class T>
+T &DynamicArray<T>::operator[](int index) {
+    if (index < 0 || index >= size) throw IndexOutOfRange();
+
+    return array[index];
+}
+
+template <class T>
+const T &DynamicArray<T>::operator[](int index) const {
+    if (index < 0 || index >= size) throw IndexOutOfRange();
+
+    return array[index];
+}
+
+template <class T>
+DynamicArray<T> &DynamicArray<T>::operator=(const DynamicArray<T> &other) {
+    if (this != &other) {
+        delete[] array;
+
+        size = other.size;
+        capacity = other.capacity;
+        array = new T[capacity];
+
+        for (int i = 0; i < size; i++) array[i] = other.array[i];
+    }
+
+    return *this;
+}
+
+
 template <class T>
 T DynamicArray<T>::get(int index) const {
     if (index < size and index >= 0) {
@@ -120,14 +115,6 @@ int DynamicArray<T>::getSize() const {
 template <class T>
 bool DynamicArray<T>::isEmpty() const {
     return size == 0;
-}
-
-template <class T>
-void DynamicArray<T>::print() const {
-    for (int i = 0; i < size; i++) {
-        std::cout << array[i] << " ";
-    }
-    std::cout << std::endl;
 }
 
 template <class T>
@@ -160,6 +147,7 @@ void DynamicArray<T>::set(T item, int index) {
     }
 }
 
+
 template <class T>
 IEnumerator<T> *DynamicArray<T>::getEnumerator() const {
     class DynamicArrayEnumerator : public IEnumerator<T> {
@@ -175,6 +163,7 @@ IEnumerator<T> *DynamicArray<T>::getEnumerator() const {
             
             bool moveNext() override {
                 current_index++;
+                
                 return current_index < length;
             }
             
