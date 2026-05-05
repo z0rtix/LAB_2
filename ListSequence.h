@@ -1,9 +1,9 @@
 #ifndef LISTSEQUENCE_H
 #define LISTSEQUENCE_H
 
-#include "Sequence.h"
-#include "LinkedList.h"
 #include "DynamicArray.h"
+#include "LinkedList.h"
+#include "Sequence.h"
 
 
 template <class T>

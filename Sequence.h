@@ -28,10 +28,10 @@ class Sequence {
 
         virtual IEnumerator<T> *getEnumerator() const = 0;
 
-        virtual Sequence<T> *concat(Sequence<T> *list) const = 0;
-        virtual Sequence<T> *getSubsequence(int startIndex, int endIndex) const = 0;
-
         virtual Sequence<T> *copy() const = 0;
+
+        virtual Sequence<T> *concat(Sequence<T> *sequence) const = 0;
+        virtual Sequence<T> *getSubsequence(int startIndex, int endIndex) const = 0;
 };
 
 

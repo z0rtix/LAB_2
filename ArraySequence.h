@@ -1,9 +1,9 @@
 #ifndef ARRAYSEQUENCE_H
 #define ARRAYSEQUENCE_H
 
-#include "Sequence.h"
 #include "DynamicArray.h"
 #include "LinkedList.h"
+#include "Sequence.h"
 
 
 template <class T>
@@ -47,7 +47,7 @@ class ArraySequence : public Sequence<T> {
         
         virtual ArraySequence<T> *copy() const override = 0;
 
-        ArraySequence<T> *concat(Sequence<T> *list) const override;
+        ArraySequence<T> *concat(Sequence<T> *sequence) const override;
         ArraySequence<T> *getSubsequence(int startIndex, int endIndex) const override;
 
         template <typename Func>
@@ -179,9 +179,7 @@ ArraySequence<T> *ArraySequence<T>::insertAt(T item, int index) {
     ArraySequence<T> *obj = instance();
 
     int currentSize = obj->array->getSize();
-    if (index < 0 || index > currentSize) {
-        throw IndexOutOfRange();
-    }
+    if (index < 0 || index > currentSize) throw IndexOutOfRange();
 
     obj->array->resize(currentSize + 1);    
     for (int i = currentSize - 1; i >= index; i--) {
@@ -301,13 +299,13 @@ class ImmutableArraySequence : public ArraySequence<T> {
 
 
 template <class T>
-ArraySequence<T> *ArraySequence<T>::concat(Sequence<T> *array) const {
-    if (array == nullptr) throw IndexOutOfRange();
+ArraySequence<T> *ArraySequence<T>::concat(Sequence<T> *sequence) const {
+    if (sequence == nullptr) throw IndexOutOfRange();
     
     MutableArraySequence<T> *result = new MutableArraySequence<T>(*this);
 
-    for (int i = 0; i < array->getLength(); i++) {
-        result->append(array->get(i));
+    for (int i = 0; i < sequence->getLength(); i++) {
+        result->append(sequence->get(i));
     }
 
     return result;
